@@ -1,2 +1,2 @@
 # BioCapstone
-Project 7
+Project 6
