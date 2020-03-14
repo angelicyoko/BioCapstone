@@ -27,8 +27,13 @@ with open('Dataset2.csv', encoding='utf-8', mode = 'r') as csvFile:
 ### tuple[3] is the weight (has already been casted to int)
 
 ### Jack's TODO ###
-
-
+graph = nx.MultiDiGraph()
+for line in data:
+    # does not contain weights for all of the tuples
+    graph.add_edge(line[0], line[1], line[2])
+# Uncomment this to show a basic plot of the graph
+# nx.draw(graph)
+# plt.show()
 
 ####################### DEGREE GRAPH ########################
 ### Ashley's TODO ###
