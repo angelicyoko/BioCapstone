@@ -29,8 +29,8 @@ with open('Dataset2.csv', encoding='utf-8', mode = 'r') as csvFile:
 ### Jack's TODO ###
 graph = nx.MultiDiGraph()
 for line in data:
-    # does not contain weights for all of the tuples
-    graph.add_edge(line[0], line[1], line[2])
+    if (line[2] != ""):
+        graph.add_edge(line[0], line[1], line[2])
 # Uncomment this to show a basic plot of the graph
 # nx.draw(graph)
 # plt.show()
