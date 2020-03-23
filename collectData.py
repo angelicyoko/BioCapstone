@@ -48,44 +48,53 @@ for line in data:
 #Dictionary objects holding strength values ie. { 'MOD' : 25, ... }
 strengthIN = {}
 strengthOUT = {}
+# List of 77 nodes that are included
+nodesI = [ "ECT","VISp", "VISal", "TEa", "VISpm", "SSs", "VISam", "VISrl", "SSp", "AUDv", "6b", "MOp", "VISlm","AUDp","PTLp","AUDpo","VISpl","AUDd","VISli","VISll","VISlla","ENTl","ORBm","PERI","PIR","LA","AIp","PL","BLAp","ENTm","EPd","ILA","BLAa","COApm","AIv","CA1v","VISC","AId","AOA","TR","GU","EPv","PAA","NLOT","BMAp","SUBv","BMAa","CA3","COApl","COAa","NLOT3","CA1d","TTd","SUBd","PA","MOB","TTv","DG","CA2","IG","AOB","FC","MOs","RSPd","CLA","ACAv","ORBv","RSPv.a","ACAd","ORBvl","RSPv.b/c","PAR","POST","RSPagl","PRE","ORBl","RSPv","ECT","VISp","VISal","TEa","VISpm","SSs","VISam","VISrl","SSp","AUDv","6b","MOp","VISlm","AUDp","PTLp","AUDpo","VISpl","AUDd","VISli","VISll","VISlla","ENTl","ORBm","PERI","PIR","LA","AIp","PL","BLAp","ENTm","EPd","ILA","BLAa","COApm","AIv","CA1v","VISC","AId","AOA","TR","GU","EPv","PAA","NLOT","BMAp","SUBv","BMAa","CA3","COApl","COAa","NLOT3","CA1d","TTd","SUBd","PA","MOB","TTv","DG","CA2","IG","AOB","FC","MOs","CLA","RSPd","ACAv","ORBv","ACAd","RSPv.a","RSPv.b/c","POST","RSPagl","PAR","PRE","ORBl","ORBvl","RSPv"]
+
 for n in graph.nodes(): #Iterate through nodes in the graph
 	node = n.split("_")[0]
-	hemisphere = n.split("_")[1]
-	sumIn = 0
-	sumOut = 0
-	#Iterate through all the in edges of a node
-	#Calculate the total in strength 
-	#Only consider edges in hemisphere ie (one->one, left->left, right->right)
-	for u,v,w in graph.in_edges(n, data=True):
-		hem  = v.split("_")[1]
-		if hem == "one" and hemisphere == "one":
-			sumIn += w.get("weight")
-		elif hem == "left" and hemisphere == "left":
-                        sumIn += w.get("weight")
-		elif hem == "right" and hemisphere == "right":
-                        sumIn += w.get("weight")
-	#Iterate through all the out edges of a node
-        #Calculate the total out strength
-        #Only consider edges in hemisphere (one->one, left->left, right->right)
-	for u,v,w in graph.out_edges(n, data=True):
-                hem  = v.split("_")[1]
-                if hem == "one" and hemisphere == "one":
-                        sumOut += w.get("weight")
-                elif hem == "left" and hemisphere == "left":
-                        sumOut += w.get("weight")
-                elif hem == "right" and hemisphere == "right":
-                        sumOut += w.get("weight")
-	#Making sure there are no repeat nodes in the dictonary
-	#MOD_one and MOD_left = MOD in the dictonary
-	if node in strengthIN:
-		strengthIN[node] = strengthIN.get(node) + sumIn
-	else:	
-		strengthIN[node] = sumIn
-	if node in strengthOUT:
-		strengthOUT[node] = strengthOUT.get(node) + sumOut
-	else:
-		strengthOUT[node] = sumOut
+	if node in nodesI:
+		hemisphere = n.split("_")[1]
+		sumIn = 0
+		sumOut = 0
+		#Iterate through all the in edges of a node
+		#Calculate the total in strength 
+		#Only consider edges in hemisphere ie (one->one, left->left, right->right)
+		for u,v,w in graph.in_edges(n, data=True):
+			name = v.split("_")[0]
+			if name in nodesI:
+				hem  = v.split("_")[1]
+				if hem == "one" and hemisphere == "one":
+					sumIn += w.get("weight")
+				elif hem == "left" and hemisphere == "left":
+                	        	sumIn += w.get("weight")
+				elif hem == "right" and hemisphere == "right":
+        	                	sumIn += w.get("weight")
+		#Iterate through all the out edges of a node
+        	#Calculate the total out strength
+        	#Only consider edges in hemisphere (one->one, left->left, right->right)
+		for u,v,w in graph.out_edges(n, data=True):
+			name = v.split("_")[0]
+			if name in nodesI:
+				hem  = v.split("_")[1]
+				if hem == "one" and hemisphere == "one":
+					sumOut += w.get("weight")
+				elif hem == "left" and hemisphere == "left":
+					sumOut += w.get("weight")
+				elif hem == "right" and hemisphere == "right":
+					sumOut += w.get("weight")
+		#Making sure there are no repeat nodes in the dictonary
+		#MOD_one and MOD_left = MOD in the dictonary
+		if node in strengthIN:
+			strengthIN[node] = strengthIN.get(node) + sumIn
+		else:	
+			strengthIN[node] = sumIn
+		if node in strengthOUT:
+			strengthOUT[node] = strengthOUT.get(node) + sumOut
+		else:
+			strengthOUT[node] = sumOut
 
+#print(len(strengthOUT.keys()))
 #Input Strength Graph
 plt.figure(figsize=(40,10))
 plt.bar(strengthIN.keys(), strengthIN.values())
