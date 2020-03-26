@@ -21,7 +21,6 @@ with open('Dataset2.csv', encoding='utf-8', mode = 'r') as csvFile:
 				count += 1
 				if sub['start'] == "" or sub['target'] == '':
 					continue
-				# sub["data_type"] = str(line[4]) if len(line[4]) != 0 else ""
 				sub["binned_strength"] = int(line[5]) if len(line[5]) != 0 else ""
 				if sub["binned_strength"] == "":
 					break
@@ -72,14 +71,13 @@ f.close()
 ### tuple[3] is the weight (has already been casted to int)
 
 ### Jack's TODO ###
-G = nx.MultiDiGraph()
-G.add_edges_from(data)
-print("number of nodes: " + str(len(G.nodes())))
-# print(G.nodes())
-print("number of edges: " + str(G.number_of_edges()))
-print("out degree: " + str(G.out_degree('FC')))
-print("in degree: " + str(G.in_degree('FC')))
-# print(G.edges())
+graph = nx.MultiDiGraph()
+for line in data:
+	graph.add_edge(line[0], line[1], weight=line[2])
+#print("number of nodes: " + str(len(G.nodes())))
+#print("number of edges: " + str(G.number_of_edges()))
+#print("out degree: " + str(G.out_degree('FC')))
+#print("in degree: " + str(G.in_degree('FC')))
 # Uncomment this to show a basic plot of the graph
 # nx.draw(graph)
 # plt.show()
@@ -87,30 +85,69 @@ print("in degree: " + str(G.in_degree('FC')))
 
 ####################### DEGREE GRAPH ########################
 ### Ashley's TODO ###
+# List of 77 nodes that are included
+nodesI = [ "ECT","VISp", "VISal", "TEa", "VISpm", "SSs", "VISam", "VISrl", "SSp", "AUDv", "6b", "MOp", "VISlm","AUDp","PTLp","AUDpo","VISpl","AUDd","VISli","VISll","VISlla","ENTl","ORBm","PERI","PIR","LA","AIp","PL","BLAp","ENTm","EPd","ILA","BLAa","COApm","AIv","CA1v","VISC","AId","AOA","TR","GU","EPv","PAA","NLOT","BMAp","SUBv","BMAa","CA3","COApl","COAa","NLOT3","CA1d","TTd","SUBd","PA","MOB","TTv","DG","CA2","IG","AOB","FC","MOs","RSPd","CLA","ACAv","ORBv","RSPv.a","ACAd","ORBvl","RSPv.b/c","PAR","POST","RSPagl","PRE","ORBl","RSPv","ECT","VISp","VISal","TEa","VISpm","SSs","VISam","VISrl","SSp","AUDv","6b","MOp","VISlm","AUDp","PTLp","AUDpo","VISpl","AUDd","VISli","VISll","VISlla","ENTl","ORBm","PERI","PIR","LA","AIp","PL","BLAp","ENTm","EPd","ILA","BLAa","COApm","AIv","CA1v","VISC","AId","AOA","TR","GU","EPv","PAA","NLOT","BMAp","SUBv","BMAa","CA3","COApl","COAa","NLOT3","CA1d","TTd","SUBd","PA","MOB","TTv","DG","CA2","IG","AOB","FC","MOs","CLA","RSPd","ACAv","ORBv","ACAd","RSPv.a","RSPv.b/c","POST","RSPagl","PAR","PRE","ORBl","ORBvl","RSPv"]
 
+in_degree = {}
+out_degree = {}
+for node, degree in graph.in_degree(graph.nodes()):
+	if node in nodesI:
+		in_degree[node] = degree
+
+for node, degree in graph.out_degree(graph.nodes()):
+	if node in nodesI:
+		out_degree[node] = degree
+
+sorted_in = {k: v for k, v in sorted(in_degree.items(), key=lambda item: item[1])}
+sorted_out = {k: v for k, v in sorted(out_degree.items(), key=lambda item: item[1])}
+
+plt.figure(figsize=(40,10))
+plt.bar(sorted_out.keys(), sorted_out.values())
+plt.savefig('out_degree.png')
+plt.xlabel('Nodes')
+plt.ylabel('degree')
+
+plt.figure(figsize=(40,10))
+plt.bar(sorted_in.keys(), sorted_in.values())
+plt.savefig('in_degree.png')
+plt.xlabel('Nodes')
+plt.ylabel('degree')
 
 
 ####################### STENGTH GRAPH #######################
 ### Manisha's TODO ###
 #Input Strength Graph
 
-in_degree = {}
-out_degree = {}
-in_strength = {}
-out_strength = {}
-for node, degree in G.in_degree(G.nodes()):
-	in_degree[node] = degree
+strengthIN = {}
+strengthOUT = {}
+for n in graph.nodes():
+	if n in nodesI:
+		sumIn = 0
+		sumOut = 0
+		for u,v,w in graph.in_edges(n, data=True):
+			if v in nodesI:
+				sumIn += w.get("weight")
+		#print(graph.out_edges(n, data=True))
+		for u,v,w in graph.out_edges(n, data=True):		
+			if v in nodesI:
+				sumOut += w.get("weight")
+		
+		strengthIN[n] = sumIn
+		strengthOUT[n] = sumOut
 
-for node, degree in G.out_degree(G.nodes()):
-	out_degree[node] = degree
+sorted_inD = {k: v for k, v in sorted(strengthIN.items(), key=lambda item: item[1])}
+sorted_outD = {k: v for k, v in sorted(strengthOUT.items(), key=lambda item: item[1])}
 
-for node, out, weight in G.out_edges(G.nodes()):
-	print(weight)
-	break
-	out_strength[node] = weight.get("weight")
-
+#Input Strength Graph
 plt.figure(figsize=(40,10))
-plt.bar(out_strength.keys(), out_strength.values())
-plt.savefig('out_strength.png')
+plt.bar(sorted_inD.keys(), sorted_inD.values())
+plt.savefig('inStrength.png')
 plt.xlabel('Nodes')
-plt.ylabel('out_strength')
+plt.ylabel('Strength')
+
+#Output Strength
+plt.figure(figsize=(40,10))
+plt.bar(sorted_outD.keys(), sorted_outD.values())
+plt.savefig('outStrength.png')
+plt.xlabel('Nodes')
+plt.ylabel('Strength')
