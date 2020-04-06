@@ -15,26 +15,28 @@ with open('Dataset2.csv', encoding='utf-8', mode = 'r') as csvFile:
 	for line in read:
 		if begin >= 3:
 			sub = {}
-			sub["start"] = str(line[1]) #+ "_" + str(line[0])
-			sub["target"] = str(line[3]) #+ "_" + str(line[2])
+			sub["start"] = str(line[1]) 
+			sub["target"] = str(line[3]) 
 			if str(line[0]) == str(line[2]):
 				count += 1
 				if sub['start'] == "" or sub['target'] == '':
 					continue
-				sub["binned_strength"] = int(line[5]) if len(line[5]) != 0 else ""
-				if sub["binned_strength"] == "":
-					break
-				if sub["binned_strength"] == 0:
-					continue
+				#sub["binned_strength"] = int(line[5]) if len(line[5]) != 0 else ""
+				if line[5] == '':
+					break;
+				if int(line[5]) > 0:
+					sub["binned_strength"] = 1
+				if int(line[5]) == 0:
+					sub["binned_strength"] = 0
 				tuple_sub_weight = (sub["start"], sub["target"], sub["binned_strength"])
 				tuple_sub = (sub["start"], sub["target"])
-				if tuple_sub in test:
-					find = [i for i, v in enumerate(data) if v[0] == sub["start"] and v[1] == sub["target"]]
-					find = find[0]
-					y = list(data[find])
-					y[2] += sub["binned_strength"]
-					data[find] = tuple(y)
-				else:
+				if tuple_sub not in test:
+				#	find = [i for i, v in enumerate(data) if v[0] == sub["start"] and v[1] == sub["target"]]
+				#	find = find[0]
+				#	y = list(data[find])
+				#	y[2] += sub["binned_strength"]
+				#	data[find] = tuple(y)
+				#else:
 					test.append(tuple_sub)
 					data.append(tuple_sub_weight)
 		begin += 1
@@ -126,14 +128,43 @@ for n in graph.nodes():
 		sumOut = 0
 		for u,v,w in graph.in_edges(n, data=True):
 			if v in nodesI:
-				sumIn += w.get("weight")
+				if(w.get("weight") == 7):
+					sumOut += 10**0;
+				elif(w.get("weight") == 6):
+                                         sumOut += 10**0.333;
+				elif(w.get("weight") == 5):
+                                         sumOut += 10**0.66;
+				elif(w.get("weight") == 4):
+                                         sumOut += 10**-1;
+				elif(w.get("weight") == 3):
+                                         sumOut += 10**-2;
+				elif(w.get("weight") == 2):
+                                         sumOut += 10**-3;
+				elif(w.get("weight") == 1):
+                                         sumOut += 10**-4;
+				else:
+                                         sumOut += 0;
 		#print(graph.out_edges(n, data=True))
 		for u,v,w in graph.out_edges(n, data=True):		
 			if v in nodesI:
-				sumOut += w.get("weight")
-		
-		strengthIN[n] = sumIn
-		strengthOUT[n] = sumOut
+				if(w.get("weight") == 7):
+                                         sumOut += 10**0;
+				elif(w.get("weight") == 6):
+                                         sumOut += 10**0.333;
+				elif(w.get("weight") == 5):
+                                         sumOut += 10**0.66;
+				elif(w.get("weight") == 4):
+                                         sumOut += 10**-1;
+				elif(w.get("weight") == 3):
+                                         sumOut += 10**-2;
+				elif(w.get("weight") == 2):
+                                         sumOut += 10**-3;
+				elif(w.get("weight") == 1):
+                                         sumOut += 10**-4;
+				else:
+                                         sumOut += 0;		
+		strengthIN[n] = sumIn*(10**3)
+		strengthOUT[n] = sumOut*(10**3)
 
 sorted_inD = {k: v for k, v in sorted(strengthIN.items(), key=lambda item: item[1])}
 sorted_outD = {k: v for k, v in sorted(strengthOUT.items(), key=lambda item: item[1])}
