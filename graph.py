@@ -21,13 +21,11 @@ with open('Dataset2.csv', encoding='utf-8', mode = 'r') as csvFile:
 				count += 1
 				if sub['start'] == "" or sub['target'] == '':
 					continue
-				#sub["binned_strength"] = int(line[5]) if len(line[5]) != 0 else ""
-				if line[5] == '':
-					break;
-				if int(line[5]) > 0:
-					sub["binned_strength"] = 1
-				if int(line[5]) == 0:
-					sub["binned_strength"] = 0
+				sub["binned_strength"] = int(line[5]) if len(line[5]) != 0 else ""
+				if sub["binned_strength"] == '':
+					break
+				if sub["binned_strength"] == 0:
+					continue
 				tuple_sub_weight = (sub["start"], sub["target"], sub["binned_strength"])
 				tuple_sub = (sub["start"], sub["target"])
 				if tuple_sub not in test:
@@ -131,9 +129,9 @@ for n in graph.nodes():
 				if(w.get("weight") == 7):
 					sumOut += 10**0;
 				elif(w.get("weight") == 6):
-                                         sumOut += 10**0.333;
+                                         sumOut += 10**-0.333;
 				elif(w.get("weight") == 5):
-                                         sumOut += 10**0.66;
+                                         sumOut += 10**-0.66;
 				elif(w.get("weight") == 4):
                                          sumOut += 10**-1;
 				elif(w.get("weight") == 3):
@@ -148,23 +146,23 @@ for n in graph.nodes():
 		for u,v,w in graph.out_edges(n, data=True):		
 			if v in nodesI:
 				if(w.get("weight") == 7):
-                                         sumOut += 10**0;
+                                         sumIn += 10**0;
 				elif(w.get("weight") == 6):
-                                         sumOut += 10**0.333;
+                                         sumIn += 10**-0.333;
 				elif(w.get("weight") == 5):
-                                         sumOut += 10**0.66;
+                                         sumIn += 10**-0.66;
 				elif(w.get("weight") == 4):
-                                         sumOut += 10**-1;
+                                         sumIn += 10**-1;
 				elif(w.get("weight") == 3):
-                                         sumOut += 10**-2;
+                                         sumIn += 10**-2;
 				elif(w.get("weight") == 2):
-                                         sumOut += 10**-3;
+                                         sumIn += 10**-3;
 				elif(w.get("weight") == 1):
-                                         sumOut += 10**-4;
+                                         sumIn += 10**-4;
 				else:
-                                         sumOut += 0;		
-		strengthIN[n] = sumIn*(10**3)
-		strengthOUT[n] = sumOut*(10**3)
+                                         sumIn += 0;		
+		strengthIN[n] = sumIn
+		strengthOUT[n] = sumOut
 
 sorted_inD = {k: v for k, v in sorted(strengthIN.items(), key=lambda item: item[1])}
 sorted_outD = {k: v for k, v in sorted(strengthOUT.items(), key=lambda item: item[1])}
