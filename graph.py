@@ -61,40 +61,10 @@ def graph_help(graph):
 			sumOut = 0
 			for u,v,w in graph.in_edges(n, data=True):
 				if v in nodesI:
-					if(w.get("weight") == 7):
-						sumOut += 10**0;
-					elif(w.get("weight") == 6):
-        	                                sumOut += 10**-0.333;
-					elif(w.get("weight") == 5):
-                        	                sumOut += 10**-0.66;
-					elif(w.get("weight") == 4):
-                                        	sumOut += 10**-1;
-					elif(w.get("weight") == 3):
-        	                                sumOut += 10**-2;
-					elif(w.get("weight") == 2):
-                        	                sumOut += 10**-3;
-					elif(w.get("weight") == 1):
-						sumOut += 10**-4;
-				else:
-                                         sumOut += 0;
+					sumOut += w.get("weight")
 			for u,v,w in graph.out_edges(n, data=True):
 				if v in nodesI:
-					if(w.get("weight") == 7):
-                                        	 sumIn += 10**0;
-					elif(w.get("weight") == 6):
-        	                                 sumIn += 10**-0.333;
-					elif(w.get("weight") == 5):
-                        	                 sumIn += 10**-0.66;
-					elif(w.get("weight") == 4):
-                                        	 sumIn += 10**-1;
-					elif(w.get("weight") == 3):
-        	                                 sumIn += 10**-2;
-					elif(w.get("weight") == 2):
-                        	                 sumIn += 10**-3;
-					elif(w.get("weight") == 1):
-                                        	 sumIn += 10**-4;
-					else:
-        	                                 sumIn += 0;
+					sumIn += w.get("weight")
 			strengthIN[n] = sumIn
 			strengthOUT[n] = sumOut
 

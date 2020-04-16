@@ -38,15 +38,47 @@ with open('Dataset2.csv', encoding='utf-8', mode='r') as csvFile:
 ### tuple[0] is the start node
 ### tuple[1] is the target node
 ### tuple[2] is the weight (has already been casted to int)
-graph = nx.MultiDiGraph()
+graph = nx.DiGraph()
 for line in data:
-    if (line[2] != ""):
-        graph.add_edge(line[0], line[1], weight=line[2])
+	if (line[2] != ""):
+		num = int(line[2])
+		if(line[2] == 7):
+			num = 10**0;
+		elif(line[2] == 6):
+			num= 10**-0.333;
+		elif(line[2] == 5):
+			num= 10**-0.66;
+		elif(line[2] == 4):
+			num= 10**-1;
+		elif(line[2] == 3):
+			num= 10**-2;
+		elif(line[2] == 2):
+			num= 10**-3;
+		elif(line[2] == 1):
+			num= 10**-4;
+		else:
+			num= 0;
+		graph.add_edge(line[0], line[1], weight=num)
 
 ####################### DEGREE AND STRENGTH GRAPH ########################
 graph_help(graph)
 
+####################### Clustering Coefficient ###################
+clustering_coeff = nx.average_clustering(graph, weight="weight")
+print(clustering_coeff)
 
+
+
+
+####################### Average Shortest Path Length #####################
+
+
+
+####################### Global Efficiency ###############################
+
+
+
+ 
 ####################### Rich Club Analysis #######################
 # TODO: Ashley
 # rich club analysis is how densely a graph is connected, etc rich stick together
