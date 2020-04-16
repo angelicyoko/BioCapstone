@@ -117,6 +117,10 @@ plt.savefig('outStrength.png')
 plt.xlabel('Nodes')
 plt.ylabel('Strength')
 
-
 ####################### Rich Club Analysis #######################
 # TODO: Ashley
+# rich club analysis is how densely a graph is connected, etc rich stick together
+# nx.rich_club_coefficient(graph, normalized=True, Q=100, seed=None)
+# NOTE: networkx rich club only works for undirected graphs
+# found a research paper https://arxiv.org/abs/1103.2264 that takes a
+# swing at directed rich club analysis, will try to understand their approach

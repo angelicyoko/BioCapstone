@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 ######################### READ DATA #########################
 
 def degree_help():
-	print("we in degree help")
 	data = []
 	test = []
 	with open('Dataset2.csv', encoding='utf-8', mode='r') as csvFile:
@@ -40,7 +39,7 @@ def degree_help():
 						test.append(tuple_sub)
 						data.append(tuple_sub_weight)
 			begin += 1
-		print("count is: " + str(count))
+		#print("count is: " + str(count))
 
 	## To Json ##
 
