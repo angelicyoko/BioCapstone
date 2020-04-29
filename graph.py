@@ -36,17 +36,19 @@ def graph_help(graph):
 	sorted_in = {k: v for k, v in sorted(in_degree.items(), key=lambda item: item[1])}
 	sorted_out = {k: v for k, v in sorted(out_degree.items(), key=lambda item: item[1])}
 
-	plt.figure(figsize=(40, 10))
-	plt.bar(sorted_out.keys(), sorted_out.values())
+	plt.figure(figsize=(30, 10))
+	plt.bar(sorted_out.keys(), sorted_out.values(), width=1)
+	plt.xlabel('Regions of Cerebral Cortex')
+	plt.ylabel('Degree (within hemisphere)')
+	plt.title("Out Degree of Mouse Connectome")
 	plt.savefig('out_degree.png')
-	plt.xlabel('Nodes')
-	plt.ylabel('degree')
-
-	plt.figure(figsize=(40, 10))
-	plt.bar(sorted_in.keys(), sorted_in.values())
+	
+	plt.figure(figsize=(30, 10))
+	plt.bar(sorted_in.keys(), sorted_in.values(), width=1)
+	plt.xlabel('Regions of Cerebral Cortex')
+	plt.ylabel('Degree (within hemisphere)')
+	plt.title("In Degree of Mouse Connectome")
 	plt.savefig('in_degree.png')
-	plt.xlabel('Nodes')
-	plt.ylabel('degree')
 
 
 	####################### STENGTH GRAPH #######################
@@ -72,15 +74,17 @@ def graph_help(graph):
 	sorted_outD = {k: v for k, v in sorted(strengthOUT.items(), key=lambda item: item[1])}
 
 	#Input Strength Graph
-	plt.figure(figsize=(40,10))
-	plt.bar(sorted_inD.keys(), sorted_inD.values())
+	plt.figure(figsize=(30,10))
+	plt.bar(sorted_inD.keys(), sorted_inD.values(), width=1)
+	plt.xlabel('Regions of Cerebral Cortex')
+	plt.ylabel('Strength (within hemisphere)')
+	plt.title("In Strength of Mouse Connectome")
 	plt.savefig('inStrength.png')
-	plt.xlabel('Nodes')
-	plt.ylabel('Strength')
 
 	#Output Strength
-	plt.figure(figsize=(40,10))
-	plt.bar(sorted_outD.keys(), sorted_outD.values())
+	plt.figure(figsize=(30,10))
+	plt.bar(sorted_outD.keys(), sorted_outD.values(), width=1)
+	plt.xlabel('Regions of Cerebral Cortex')
+	plt.ylabel('Strength (within hemisphere)')
+	plt.title("Out Strength of Mouse Connectome")
 	plt.savefig('outStrength.png')
-	plt.xlabel('Nodes')
-	plt.ylabel('Strength')
