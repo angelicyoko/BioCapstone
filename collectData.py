@@ -65,7 +65,7 @@ graph_help(graph)
 
 ####################### Clustering Coefficient ###################
 clustering_coeff = nx.average_clustering(graph, weight="weight")
-print(clustering_coeff)
+print("Clustering Coefficient: ", clustering_coeff)
 
 
 
