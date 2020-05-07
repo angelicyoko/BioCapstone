@@ -36,20 +36,28 @@ def graph_help(graph):
 	sorted_in = {k: v for k, v in sorted(in_degree.items(), key=lambda item: item[1])}
 	sorted_out = {k: v for k, v in sorted(out_degree.items(), key=lambda item: item[1])}
 
-	fig, ax = plt.subplots(figsize=(40, 10))
+	fig, ax = plt.subplots(figsize=(40,25))
 	ax.bar(sorted_out.keys(), sorted_out.values())
-	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=25)
-	ax.set_ylabel('Degree (within hemisphere)', fontsize=25)
-	ax.set_title("Out Degree of Mouse Connectome", fontsize=25)
-	plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
+	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=50, rotation=-180, labelpad=20)
+	ax.set_ylabel('Degree (within hemisphere)', fontsize=50, rotation=-90, labelpad=60)
+	secaxy = ax.secondary_yaxis('right')
+	secaxy.set_ylabel("Out Degree of Mouse Connectome", fontsize=50, rotation=-90, labelpad=50)
+	secaxy.get_yaxis().set_ticks([])
+	ax.margins(x=0)
+	plt.setp(ax.get_xticklabels(), rotation=-90, horizontalalignment='right', fontsize=25)
+	plt.setp(ax.get_yticklabels(), rotation=-90, horizontalalignment='right', fontsize=30)
 	plt.savefig('out_degree.png')
 	
-	fig, ax = plt.subplots(figsize=(40, 10))
+	fig, ax = plt.subplots(figsize=(40,25))
 	ax.bar(sorted_in.keys(), sorted_in.values())
-	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=25)
-	ax.set_ylabel('Degree (within hemisphere)', fontsize=25)
-	ax.set_title("In Degree of Mouse Connectome", fontsize=25)
-	plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
+	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=50, rotation=-180, labelpad=20)
+	ax.set_ylabel('Degree (within hemisphere)', fontsize=50, rotation=-90, labelpad=60)
+	secaxy = ax.secondary_yaxis('right')
+	secaxy.set_ylabel("In Degree of Mouse Connectome", fontsize=50, rotation=-90, labelpad=50)
+	secaxy.get_yaxis().set_ticks([])
+	ax.margins(x=0)
+	plt.setp(ax.get_xticklabels(), rotation=-90, horizontalalignment='right', fontsize=25)
+	plt.setp(ax.get_yticklabels(), rotation=-90, horizontalalignment='right', fontsize=30)
 	plt.savefig('in_degree.png')
 
 	####################### STENGTH GRAPH #######################
@@ -75,19 +83,29 @@ def graph_help(graph):
 	sorted_outD = {k: v for k, v in sorted(strengthOUT.items(), key=lambda item: item[1])}
 
 	#Input Strength Graph
-	fig, ax = plt.subplots(figsize=(40, 10))
+	fig, ax = plt.subplots(figsize=(40,25))
 	ax.bar(sorted_inD.keys(), sorted_inD.values())
-	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=25)
-	ax.set_ylabel('Strength (within hemisphere)', fontsize=25)
-	ax.set_title("In Strength of Mouse Connectome", fontsize=25)
-	plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
+	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=50, rotation=-180, labelpad=20)
+	ax.set_ylabel('Strength (within hemisphere)', fontsize=50, rotation=-90, labelpad=60)
+	secaxy = ax.secondary_yaxis('right')
+	secaxy.set_ylabel("In Strength of Mouse Connectome", fontsize=50, rotation=-90, labelpad=50)
+	secaxy.get_yaxis().set_ticks([])
+	ax.margins(x=0)
+	plt.setp(ax.get_xticklabels(), rotation=-90, horizontalalignment='right', fontsize=25)
+	plt.setp(ax.get_yticklabels(), rotation=-90, horizontalalignment='right', fontsize=30)
 	plt.savefig('in_strength.png')
 
 	#Output Strength
-	fig, ax = plt.subplots(figsize=(40, 10))
+	fig, ax = plt.subplots(figsize=(40,25))
 	ax.bar(sorted_outD.keys(), sorted_outD.values())
-	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=25)
-	ax.set_ylabel('Strength (within hemisphere)', fontsize=25)
-	ax.set_title("Out Strength of Mouse Connectome", fontsize=25)
-	plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
+	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=50, rotation=-180, labelpad=20)
+	ax.set_ylabel('Strength (within hemisphere)', fontsize=50, rotation=-90, labelpad=60)
+	secaxy = ax.secondary_yaxis('right')
+	secaxy.set_ylabel("Out Strength of Mouse Connectome", fontsize=50, rotation=-90, labelpad=60)
+	secaxy.get_yaxis().set_ticks([])
+	ax.margins(x=0)
+	plt.setp(ax.get_xticklabels(), rotation=-90, horizontalalignment='right', fontsize=25)
+	plt.setp(ax.get_yticklabels(), rotation=-90, horizontalalignment='right', fontsize=30)
 	plt.savefig('out_strength.png')
+	
+	
