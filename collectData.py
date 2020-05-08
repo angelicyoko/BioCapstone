@@ -79,7 +79,40 @@ clustering_coeff = nx.average_clustering(graph, weight="weight")
 
 
 ####################### Global Efficiency ###############################
+efficiency_graph = nx.DiGraph()
+for line in data:
+	if (line[2] != ""):
+		num = int(line[2])
+		if(line[2] == 7):
+			num = 10**0;
+		elif(line[2] == 6):
+			num= 10**-0.333;
+		elif(line[2] == 5):
+			num= 10**-0.66;
+		elif(line[2] == 4):
+			num= 10**-1;
+		elif(line[2] == 3):
+			num= 10**-2;
+		elif(line[2] == 2):
+			num= 10**-3;
+		elif(line[2] == 1):
+			num= 10**-4;
+		else:
+			num= 0;
+		num = -math.log(num)
+		efficiency_graph.add_edge(line[0], line[1], weight=num)
 
+total_path_length = 0
+path_number = 0
+all_paths = nx.all_pairs_dijkstra_path_length(efficiency_graph)
+for n in all_paths:
+	for target in n:
+		if (type(target) is dict):
+			for length in target:
+				if (target[length] != 0):
+					total_path_length = total_path_length + 1/target[length]
+					path_number = path_number + 1
+print("Global Efficiency: " + str(total_path_length/path_number))
 
 
  
