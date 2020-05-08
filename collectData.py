@@ -2,9 +2,13 @@ import csv
 import json
 import matplotlib.pyplot as plt
 import networkx as nx
+#import bct
+import numpy as np
+from numpy import mean
+import pandas as pd
 
 ######################### READ DATA #########################
-from graph import graph_help
+from graph import graph_help, rich_club_wd
 
 data = []
 test = []
@@ -65,7 +69,7 @@ graph_help(graph)
 
 ####################### Clustering Coefficient ###################
 clustering_coeff = nx.average_clustering(graph, weight="weight")
-print("Clustering Coefficient: ", clustering_coeff)
+#print(clustering_coeff)
 
 
 
@@ -83,6 +87,28 @@ print("Clustering Coefficient: ", clustering_coeff)
 # TODO: Ashley
 # rich club analysis is how densely a graph is connected, etc rich stick together
 # nx.rich_club_coefficient(graph, normalized=True, Q=100, seed=None)
+#Note that graphs must be passed in as numpy.array rather than numpy.matrix. Other constraints/edge cases of the adjacency matrices
+#(e.g. self-loops, negative weights) behave similarly to the matlab functions.
+array_Graph = nx.to_numpy_array(graph) * 10000
+
+#print(array_Graph)
+#bct.richclub weighted and directed returns a vector of the rc coefficients for level 1
+#print(rich_club_wd(array_Graph, None))
+yoko = rich_club_wd(array_Graph, None)
+l = [x for x in yoko if pd.notnull(x) and x >= 0.99]
+np.set_printoptions(threshold=np.inf)
+for x in l:
+	print(x)
+
+print("Total Nodes: ", len(l))
+print("Mean: ",mean(l))
+
+
+# check to see if bct weighted directed clustering is the same as ours
+# print(mean(bct.clustering_coef_wd(array_Graph)))
 # NOTE: networkx rich club only works for undirected graphs
 # found a research paper https://arxiv.org/abs/1103.2264 that takes a
 # swing at directed rich club analysis, will try to understand their approach
+
+
+

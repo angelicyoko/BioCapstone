@@ -2,6 +2,8 @@ import csv
 import json
 import networkx as nx
 import matplotlib.pyplot as plt
+import numpy as np
+import math
 
 ######################### READ DATA #########################
 
@@ -36,29 +38,18 @@ def graph_help(graph):
 	sorted_in = {k: v for k, v in sorted(in_degree.items(), key=lambda item: item[1])}
 	sorted_out = {k: v for k, v in sorted(out_degree.items(), key=lambda item: item[1])}
 
-	fig, ax = plt.subplots(figsize=(40,25))
-	ax.bar(sorted_out.keys(), sorted_out.values())
-	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=50, rotation=-180, labelpad=20)
-	ax.set_ylabel('Degree (within hemisphere)', fontsize=50, rotation=-90, labelpad=60)
-	secaxy = ax.secondary_yaxis('right')
-	secaxy.set_ylabel("Out Degree of Mouse Connectome", fontsize=50, rotation=-90, labelpad=50)
-	secaxy.get_yaxis().set_ticks([])
-	ax.margins(x=0)
-	plt.setp(ax.get_xticklabels(), rotation=-90, horizontalalignment='right', fontsize=25)
-	plt.setp(ax.get_yticklabels(), rotation=-90, horizontalalignment='right', fontsize=30)
+	plt.figure(figsize=(40, 10))
+	plt.bar(sorted_out.keys(), sorted_out.values())
 	plt.savefig('out_degree.png')
-	
-	fig, ax = plt.subplots(figsize=(40,25))
-	ax.bar(sorted_in.keys(), sorted_in.values())
-	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=50, rotation=-180, labelpad=20)
-	ax.set_ylabel('Degree (within hemisphere)', fontsize=50, rotation=-90, labelpad=60)
-	secaxy = ax.secondary_yaxis('right')
-	secaxy.set_ylabel("In Degree of Mouse Connectome", fontsize=50, rotation=-90, labelpad=50)
-	secaxy.get_yaxis().set_ticks([])
-	ax.margins(x=0)
-	plt.setp(ax.get_xticklabels(), rotation=-90, horizontalalignment='right', fontsize=25)
-	plt.setp(ax.get_yticklabels(), rotation=-90, horizontalalignment='right', fontsize=30)
+	plt.xlabel('Nodes')
+	plt.ylabel('degree')
+
+	plt.figure(figsize=(40, 10))
+	plt.bar(sorted_in.keys(), sorted_in.values())
 	plt.savefig('in_degree.png')
+	plt.xlabel('Nodes')
+	plt.ylabel('degree')
+
 
 	####################### STENGTH GRAPH #######################
 	### Manisha's TODO ###
@@ -83,29 +74,64 @@ def graph_help(graph):
 	sorted_outD = {k: v for k, v in sorted(strengthOUT.items(), key=lambda item: item[1])}
 
 	#Input Strength Graph
-	fig, ax = plt.subplots(figsize=(40,25))
-	ax.bar(sorted_inD.keys(), sorted_inD.values())
-	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=50, rotation=-180, labelpad=20)
-	ax.set_ylabel('Strength (within hemisphere)', fontsize=50, rotation=-90, labelpad=60)
-	secaxy = ax.secondary_yaxis('right')
-	secaxy.set_ylabel("In Strength of Mouse Connectome", fontsize=50, rotation=-90, labelpad=50)
-	secaxy.get_yaxis().set_ticks([])
-	ax.margins(x=0)
-	plt.setp(ax.get_xticklabels(), rotation=-90, horizontalalignment='right', fontsize=25)
-	plt.setp(ax.get_yticklabels(), rotation=-90, horizontalalignment='right', fontsize=30)
-	plt.savefig('in_strength.png')
+	plt.figure(figsize=(40,10))
+	plt.bar(sorted_inD.keys(), sorted_inD.values())
+	plt.savefig('inStrength.png')
+	plt.xlabel('Nodes')
+	plt.ylabel('Strength')
 
 	#Output Strength
-	fig, ax = plt.subplots(figsize=(40,25))
-	ax.bar(sorted_outD.keys(), sorted_outD.values())
-	ax.set_xlabel('Regions of Cerebral Cortex', fontsize=50, rotation=-180, labelpad=20)
-	ax.set_ylabel('Strength (within hemisphere)', fontsize=50, rotation=-90, labelpad=60)
-	secaxy = ax.secondary_yaxis('right')
-	secaxy.set_ylabel("Out Strength of Mouse Connectome", fontsize=50, rotation=-90, labelpad=60)
-	secaxy.get_yaxis().set_ticks([])
-	ax.margins(x=0)
-	plt.setp(ax.get_xticklabels(), rotation=-90, horizontalalignment='right', fontsize=25)
-	plt.setp(ax.get_yticklabels(), rotation=-90, horizontalalignment='right', fontsize=30)
-	plt.savefig('out_strength.png')
-	
-	
+	plt.figure(figsize=(40,10))
+	plt.bar(sorted_outD.keys(), sorted_outD.values())
+	plt.savefig('outStrength.png')
+	plt.xlabel('Nodes')
+	plt.ylabel('Strength')
+
+
+
+def rich_club_wd(CIJ, klevel=None):
+	'''
+	Parameters
+	----------
+	CIJ : NxN np.ndarray
+		weighted directed connection matrix
+	klevel : int | None
+		sets the maximum level at which the rich club coefficient will be
+		calculated. If None (default), the maximum level is set to the
+		maximum degree of the adjacency matrix
+
+	Returns
+	-------
+	Rw : Kx1 np.ndarray
+		vector of rich-club coefficients for levels 1 to klevel
+	'''
+	nr_nodes = len(CIJ)
+	# degree of each node is defined here as in+out
+	deg = np.sum((CIJ != 0), axis=0) + np.sum((CIJ.T != 0), axis=0)
+
+	if klevel is None:
+		klevel = np.max(deg)
+	Rw = np.zeros((klevel,))
+
+	# sort the weights of the network, with the strongest connection first
+	wrank = np.sort(CIJ.flat)[::-1]
+	for k in range(klevel):
+		SmallNodes, = np.where(deg < k + 1)
+		if np.size(SmallNodes) == 0:
+			Rw[k] = np.nan
+			continue
+
+		# remove small nodes with node degree < k
+		cutCIJ = np.delete(
+			np.delete(CIJ, SmallNodes, axis=0), SmallNodes, axis=1)
+		# total weight of connections in subset E>r
+		Wr = np.sum(cutCIJ)
+		# total number of connections in subset E>r
+		Er = np.size(np.where(cutCIJ.flat != 0), axis=1)
+		# E>r number of connections with max weight in network
+		wrank_r = wrank[:Er]
+		# weighted rich-club coefficient
+		if not (math.isnan(Wr / np.sum(wrank_r))):
+			Rw[k] = Wr / np.sum(wrank_r)
+			#print(Wr / np.sum(wrank_r))
+	return Rw
